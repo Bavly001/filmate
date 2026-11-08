@@ -5,6 +5,7 @@ export type StreamingPlatform =
   | 'HBO Max'
   | 'Apple TV+'
   | 'Hulu'
+  | 'Paramount+'
   | 'Cinema IMAX'
   | 'In Cinemas';
 

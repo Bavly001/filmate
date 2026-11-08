@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import Providers from './providers';
 
 export const metadata: Metadata = {
   title: 'Filmate | Smart Movie Companion & Streaming Catalog',
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-dark-bg text-gray-100 antialiased selection:bg-sunset selection:text-white">
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

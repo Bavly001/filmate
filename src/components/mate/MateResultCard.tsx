@@ -100,9 +100,9 @@ export const MateResultCard: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-1.5 mb-2">
-            {currentRecommendation.platforms.map((p) => (
+            {currentRecommendation.platforms.map((p, idx) => (
               <span
-                key={p}
+                key={`${p}-${idx}`}
                 className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sunset/15 border border-sunset/30 text-sunset"
               >
                 {p}

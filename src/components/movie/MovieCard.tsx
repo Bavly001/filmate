@@ -22,6 +22,12 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onPlayTrailer }) =>
         return 'bg-blue-600/90 text-white border-blue-400/40';
       case 'HBO Max':
         return 'bg-purple-600/90 text-white border-purple-400/40';
+      case 'Apple TV+':
+        return 'bg-zinc-700/90 text-white border-zinc-500/40';
+      case 'Hulu':
+        return 'bg-emerald-600/90 text-white border-emerald-400/40';
+      case 'Paramount+':
+        return 'bg-blue-700/90 text-white border-blue-500/40';
       case 'Cinema IMAX':
       case 'In Cinemas':
         return 'bg-sunset/90 text-white border-sunset/50';
@@ -69,17 +75,17 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onPlayTrailer }) =>
               e.stopPropagation();
               onPlayTrailer?.(movie.youtubeTrailerKey, movie);
             }}
-            className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-sunset to-cyber text-white flex items-center justify-center shadow-neon-sunset group-hover:scale-110 active:scale-90 transition-transform duration-300 z-10"
+            className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-sunset to-cyber text-white flex items-center justify-center shadow-neon-sunset group-hover:scale-110 active:scale-90 transition-transform duration-300 z-20 cursor-pointer"
           >
             <Play className="w-4 h-4 fill-white ml-0.5" />
           </button>
         )}
 
         {/* Platform tag overlay on bottom left */}
-        <div className="absolute bottom-3 left-3 flex flex-wrap gap-1 z-10">
-          {movie.platforms.slice(0, 2).map((p) => (
+        <div className="absolute bottom-3 left-3 right-14 pointer-events-none flex flex-wrap gap-1 z-10">
+          {movie.platforms.slice(0, 2).map((p, idx) => (
             <span
-              key={p}
+              key={`${p}-${idx}`}
               className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight border backdrop-blur-md shadow-sm ${getPlatformBadgeColor(
                 p
               )}`}
