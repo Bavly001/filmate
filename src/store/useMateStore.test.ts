@@ -1,6 +1,54 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useMateStore } from './useMateStore';
 
+const mockCatalog = [
+  {
+    id: 'tvm-101',
+    title: 'Interstellar Space',
+    genres: ['Sci-Fi', 'Adventure'],
+    rating: 8.8,
+    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+    synopsis: 'Exploration through a wormhole.',
+  },
+  {
+    id: 'tvm-102',
+    title: 'Speed Velocity',
+    genres: ['Action', 'Thriller'],
+    rating: 8.4,
+    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+    synopsis: 'Adrenaline highway thrills.',
+  },
+  {
+    id: 'tvm-103',
+    title: 'Night Chase',
+    genres: ['Action', 'Crime'],
+    rating: 8.1,
+    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+    synopsis: 'Urban vigilante justice.',
+  },
+  {
+    id: 'tvm-104',
+    title: 'The Great Drama',
+    genres: ['Drama'],
+    rating: 8.7,
+    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
+    synopsis: 'Emotional cinema masterpiece.',
+  },
+];
+
+vi.mock('@/services/movieApi', () => ({
+  fetchCatalogMovies: vi.fn().mockImplementation(async (opts?: { genre?: string }) => {
+    if (opts?.genre) {
+      const g = opts.genre.toLowerCase();
+      const filtered = mockCatalog.filter((m) =>
+        m.genres.some((mg) => mg.toLowerCase().includes(g))
+      );
+      return filtered.length > 0 ? filtered : mockCatalog;
+    }
+    return mockCatalog;
+  }),
+}));
+
 describe('Mate Recommendation Engine & Store', () => {
   beforeEach(() => {
     useMateStore.getState().resetQuiz();
@@ -37,10 +85,10 @@ describe('Mate Recommendation Engine & Store', () => {
     expect(useMateStore.getState().preferences.ageRating).toBe('All Ages');
   });
 
-  it('computes recommendation matching chosen moods', () => {
+  it('computes recommendation matching chosen moods', async () => {
     const store = useMateStore.getState();
     store.toggleMood('Sci-Fi');
-    store.computeRecommendation();
+    await store.computeRecommendation();
 
     const state = useMateStore.getState();
     expect(state.currentRecommendation).not.toBeNull();
@@ -48,15 +96,15 @@ describe('Mate Recommendation Engine & Store', () => {
     expect(state.seenMovieIds).toContain(state.currentRecommendation?.id);
   });
 
-  it('excludes rejected movie and delivers a different candidate', () => {
+  it('excludes rejected movie and delivers a different candidate', async () => {
     const store = useMateStore.getState();
     store.toggleMood('Action');
-    store.computeRecommendation();
+    await store.computeRecommendation();
 
     const firstMovie = useMateStore.getState().currentRecommendation;
     expect(firstMovie).not.toBeNull();
 
-    store.rejectRecommendation();
+    await store.rejectRecommendation();
     const secondMovie = useMateStore.getState().currentRecommendation;
 
     expect(useMateStore.getState().seenMovieIds).toContain(firstMovie!.id);
@@ -86,7 +134,7 @@ describe('Mate Recommendation Engine & Store', () => {
     const analysisPromise = store.startAnalysis(2500);
     expect(useMateStore.getState().step).toBe('analyzing');
 
-    vi.advanceTimersByTime(2600);
+    await vi.advanceTimersByTimeAsync(2600);
     await analysisPromise;
 
     expect(useMateStore.getState().step).toBe('result');

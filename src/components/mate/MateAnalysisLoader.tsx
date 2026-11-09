@@ -26,7 +26,7 @@ export const MateAnalysisLoader: React.FC = () => {
       {/* Animated Glowing Dual Rings */}
       <div className="relative w-24 h-24 mb-8">
         <div className="absolute inset-0 rounded-full border-4 border-sunset/20 border-t-sunset animate-spin" />
-        <div className="absolute inset-2 rounded-full border-4 border-cyber/20 border-b-cyber animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+        <div className="absolute inset-2 rounded-full border-4 border-sunset/20 border-b-sunset animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
         <div className="absolute inset-0 flex items-center justify-center">
           <Brain className="w-8 h-8 text-sunset animate-pulse" />
         </div>
@@ -40,8 +40,8 @@ export const MateAnalysisLoader: React.FC = () => {
         {steps[currentStepIndex]}
       </p>
 
-      <div className="mt-8 flex items-center gap-2 text-xs text-gray-500">
-        <Cpu className="w-3.5 h-3.5 text-cyber" />
+      <div className="mt-8 flex items-center gap-2 text-xs text-gray-400">
+        <Cpu className="w-3.5 h-3.5 text-sunset" />
         <span>FilMate Intelligent Feeling Matrix v2.0</span>
       </div>
     </div>

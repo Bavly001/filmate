@@ -8,34 +8,32 @@ export const AmbientBackground: React.FC = () => {
       className="fixed inset-0 pointer-events-none overflow-hidden z-0"
       aria-hidden="true"
     >
-      {/* Primary Warm Projector Beam (Sunset) */}
+      {/* Primary Warm Cinema Glow (Cinema Amber #F59E0B) */}
       <div
-        className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full blur-[140px] opacity-25 animate-pulse-slow"
+        className="absolute -top-32 -left-32 w-[650px] h-[650px] rounded-full blur-[140px] opacity-15 animate-pulse"
         style={{
-          background: 'radial-gradient(circle, rgba(255,107,43,0.7) 0%, rgba(255,107,43,0) 70%)',
+          background: 'radial-gradient(circle, rgba(245,158,11,0.5) 0%, rgba(245,158,11,0) 70%)',
         }}
       />
 
-      {/* Cyber Violet Premiere Glow */}
+      {/* Secondary Ambient Midnight Gold Projection */}
       <div
-        className="absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full blur-[150px] opacity-20"
+        className="absolute top-1/3 -right-40 w-[600px] h-[600px] rounded-full blur-[150px] opacity-10"
         style={{
-          background: 'radial-gradient(circle, rgba(224,64,251,0.6) 0%, rgba(224,64,251,0) 70%)',
-          animation: 'pulse 8s ease-in-out infinite alternate',
+          background: 'radial-gradient(circle, rgba(217,119,6,0.4) 0%, rgba(217,119,6,0) 70%)',
         }}
       />
 
-      {/* Golden Cinema Accent Glow */}
+      {/* Subtle Bottom Ambient Amber Glow */}
       <div
-        className="absolute bottom-10 left-1/4 w-[550px] h-[550px] rounded-full blur-[130px] opacity-15"
+        className="absolute bottom-10 left-1/4 w-[550px] h-[550px] rounded-full blur-[130px] opacity-10"
         style={{
-          background: 'radial-gradient(circle, rgba(255,167,38,0.5) 0%, rgba(255,167,38,0) 70%)',
-          animation: 'pulse 12s ease-in-out infinite alternate-reverse',
+          background: 'radial-gradient(circle, rgba(253,230,138,0.2) 0%, rgba(245,158,11,0) 70%)',
         }}
       />
 
-      {/* Cinema Screen Projection Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#08070d_95%)] opacity-85" />
+      {/* Deep Obsidian Canvas Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#07080B_95%)] opacity-95" />
     </div>
   );
 };

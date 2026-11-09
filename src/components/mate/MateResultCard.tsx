@@ -4,6 +4,7 @@ import React from 'react';
 import { Check, X, RotateCcw, Play, Star, Sparkles, HeartHandshake } from 'lucide-react';
 import { useMateStore } from '@/store/useMateStore';
 import { useMovieStore } from '@/store/useMovieStore';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 export const MateResultCard: React.FC = () => {
   const {
@@ -21,7 +22,7 @@ export const MateResultCard: React.FC = () => {
   if (step === 'exhausted' || !currentRecommendation) {
     return (
       <div className="py-8 px-4 text-center">
-        <div className="w-16 h-16 rounded-full bg-sunset/15 border border-sunset/40 text-sunset flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-full bg-sunset/15 border border-sunset/40 text-sunset flex items-center justify-center mx-auto mb-4 shadow-neon-sunset">
           <RotateCcw className="w-8 h-8" />
         </div>
         <h3 className="text-xl font-bold text-white mb-2">
@@ -32,7 +33,7 @@ export const MateResultCard: React.FC = () => {
         </p>
         <button
           onClick={resetQuiz}
-          className="px-6 py-3 rounded-xl bg-gradient-to-r from-sunset to-cyber text-white font-bold text-sm shadow-neon-sunset hover:scale-105 active:scale-95 transition-all"
+          className="px-6 py-3 rounded-xl bg-sunset hover:bg-sunset-hover text-white font-bold text-sm shadow-neon-sunset hover:shadow-neon-glow transition-all cursor-pointer"
         >
           Start Fresh Quiz
         </button>
@@ -58,9 +59,10 @@ export const MateResultCard: React.FC = () => {
       {/* Recommended Movie Poster & Details Card */}
       <div className="rounded-2xl overflow-hidden glass-panel border border-sunset/40 shadow-xl shadow-sunset/10">
         <div className="relative aspect-video w-full overflow-hidden bg-dark-surface">
-          <img
+          <ImageWithFallback
             src={currentRecommendation.posterUrl}
             alt={currentRecommendation.title}
+            fallbackTitle={currentRecommendation.title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent opacity-90" />
@@ -70,7 +72,7 @@ export const MateResultCard: React.FC = () => {
               onClick={() =>
                 openTrailerModal(currentRecommendation.youtubeTrailerKey, currentRecommendation)
               }
-              className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sunset to-cyber text-white text-xs font-bold flex items-center gap-1.5 shadow-neon-sunset hover:scale-105 transition-transform"
+              className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-sunset hover:bg-sunset-hover text-white text-xs font-bold flex items-center gap-1.5 shadow-neon-sunset hover:scale-105 transition-transform cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-white" />
               <span>Watch Trailer</span>
@@ -78,8 +80,8 @@ export const MateResultCard: React.FC = () => {
           )}
 
           <div className="absolute bottom-3 left-3 flex items-center gap-2">
-            <div className="px-2 py-0.5 rounded-md bg-dark-bg/90 border border-gold/40 text-gold text-xs font-black flex items-center gap-1">
-              <Star className="w-3 h-3 fill-gold text-gold" />
+            <div className="px-2 py-0.5 rounded-md bg-dark-bg/90 border border-sunset/40 text-sunset text-xs font-black flex items-center gap-1">
+              <Star className="w-3 h-3 fill-sunset text-sunset" />
               <span>{currentRecommendation.rating.toFixed(1)}</span>
             </div>
             <span className="text-xs text-gray-300 font-bold">
@@ -126,7 +128,7 @@ export const MateResultCard: React.FC = () => {
           </p>
           <button
             onClick={resetQuiz}
-            className="text-xs text-gray-400 hover:text-white underline font-semibold"
+            className="text-xs text-sunset hover:underline font-semibold cursor-pointer"
           >
             Start Another Search
           </button>
@@ -140,7 +142,7 @@ export const MateResultCard: React.FC = () => {
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={acceptRecommendation}
-              className="py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30 active:scale-95 transition-all cursor-pointer"
+              className="py-3 px-4 rounded-xl bg-sunset hover:bg-sunset-hover text-white font-bold text-sm flex items-center justify-center gap-2 shadow-neon-sunset active:scale-95 transition-all cursor-pointer"
             >
               <Check className="w-4 h-4 stroke-[3]" />
               <span>Yes, perfect!</span>

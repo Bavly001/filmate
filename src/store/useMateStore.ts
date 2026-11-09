@@ -35,9 +35,9 @@ interface MateState {
   setVenue: (venue: VenueType) => void;
   setAgeRating: (ageRating: AgeRating) => void;
   startAnalysis: (minDurationMs?: number) => Promise<void>;
-  computeRecommendation: () => void;
+  computeRecommendation: () => Promise<void>;
   acceptRecommendation: () => void;
-  rejectRecommendation: () => void;
+  rejectRecommendation: () => Promise<void>;
   relaxCategories: () => void;
   resetQuiz: () => void;
 }
@@ -210,13 +210,23 @@ export const useMateStore = create<MateState>((set, get) => ({
 
   computeRecommendation: async () => {
     try {
-      const broad = await fetchCatalogMovies({ page: 0 });
-      const chosen = broad.length > 0 ? broad[0] : null;
-      set({
-        currentRecommendation: chosen,
-        rationale: 'Curated for your cinematic evening.',
-        step: 'result',
-      });
+      const { moods } = get().preferences;
+      const seen = get().seenMovieIds;
+      const genre = moods.length > 0 ? moods[0] : undefined;
+      const candidates = await fetchCatalogMovies({ genre });
+      const available = candidates.filter((m) => !seen.includes(m.id));
+      const chosen = available.length > 0 ? available[0] : candidates[0] || null;
+
+      if (chosen) {
+        set({
+          currentRecommendation: chosen,
+          seenMovieIds: [...seen, chosen.id],
+          rationale: `Curated for your ${moods.join(' & ') || 'cinematic'} mood.`,
+          step: 'result',
+        });
+      } else {
+        set({ step: 'exhausted' });
+      }
     } catch {
       set({ step: 'idle' });
     }
@@ -226,8 +236,8 @@ export const useMateStore = create<MateState>((set, get) => ({
     set({ isAccepted: true });
   },
 
-  rejectRecommendation: () => {
-    get().computeRecommendation();
+  rejectRecommendation: async () => {
+    await get().computeRecommendation();
   },
 
   relaxCategories: () => {
