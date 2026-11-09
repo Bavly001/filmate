@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import MovieDetailPage from './page';
 import { Providers } from '@/app/providers';
@@ -41,6 +41,19 @@ describe('Movie Detail Page (/movies/[id])', () => {
     expect(screen.getByText(/Paul Atreides unites with Chani/i)).toBeInTheDocument();
     expect(screen.getByText(/Cinema IMAX/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /back/i })).toBeInTheDocument();
+    expect(screen.getByText(/Gold Cinema Booking/i)).toBeInTheDocument();
+  });
+
+  it('allows reserving a Gold Cinema seat via the booking concierge', async () => {
+    render(
+      <Providers>
+        <MovieDetailPage params={{ id: 'tvm-1' }} />
+      </Providers>
+    );
+    expect(await screen.findByText('Dune: Part Two')).toBeInTheDocument();
+    const bookBtn = screen.getByRole('button', { name: /book now/i });
+    fireEvent.click(bookBtn);
+    expect(screen.getByText(/cinema pass reserved/i)).toBeInTheDocument();
   });
 
   it('renders elegant not-found state when movie ID is invalid', async () => {

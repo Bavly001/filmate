@@ -82,6 +82,50 @@ export default function AboutPage() {
           </div>
         </section>
 
+        {/* Craftsmanship & Creator Spotlight (from MoviesAngularProject & Gold-cinema) */}
+        <section className="mb-20 p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-[#141722] to-[#0E1017] border border-amber-500/30 text-left max-w-5xl mx-auto shadow-2xl relative overflow-hidden backdrop-blur-xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-4 flex flex-col items-center text-center">
+              <div className="w-32 h-32 rounded-full border-2 border-amber-500/50 bg-[#161822] flex items-center justify-center text-amber-400 text-3xl font-black shadow-[0_0_25px_rgba(229,137,10,0.4)] mb-3">
+                BA
+              </div>
+              <h3 className="text-xl font-black text-white">Bavly Ashraf</h3>
+              <p className="text-xs text-amber-400 font-semibold">Lead Creator & Frontend Architect</p>
+            </div>
+
+            <div className="md:col-span-8 space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-bold uppercase tracking-wider">
+                <span>The Vision Behind Filmate</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Synthesizing Cinema Aesthetic with Next-Gen Engineering
+              </h2>
+              <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                Filmate represents a progression across multiple generations of cinema applications
+                crafted by Bavly—synthesizing the dynamic layouts of MoviesAngularProject, the luxury gold
+                atmosphere of Gold-cinema, and modern Next.js server components into a high-performance,
+                zero-mock streaming platform.
+              </p>
+              <div className="pt-2 flex flex-wrap gap-3">
+                <Link
+                  href="/contact"
+                  className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 text-black font-extrabold text-xs shadow-[0_0_15px_rgba(229,137,10,0.4)] hover:scale-105 active:scale-95 transition-all"
+                >
+                  Connect with the Creator
+                </Link>
+                <Link
+                  href="/movies"
+                  className="px-6 py-2.5 rounded-full bg-[#161822] border border-amber-500/40 text-amber-300 hover:text-white font-bold text-xs transition-colors"
+                >
+                  Browse Movie Catalog
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Craftsmanship & Mission Quote */}
         <section className="p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-[#10121B] to-[#0B0D13] border border-amber-500/20 text-center max-w-4xl mx-auto shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -97,7 +141,7 @@ export default function AboutPage() {
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/movies"
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm shadow-[0_0_20px_rgba(245,158,11,0.4)] flex items-center gap-2 active:scale-95 transition-all"
+              className="px-7 py-3 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm shadow-[0_0_20px_rgba(229,137,10,0.4)] flex items-center gap-2 active:scale-95 transition-all"
             >
               <span>Explore All Movies</span>
               <ArrowRight className="w-4 h-4" />
@@ -105,7 +149,7 @@ export default function AboutPage() {
 
             <Link
               href="/contact"
-              className="px-6 py-3 rounded-xl bg-[#10121B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-white font-bold text-sm transition-colors"
+              className="px-7 py-3 rounded-full bg-[#10121B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-white font-bold text-sm transition-colors"
             >
               <span>Contact Concierge</span>
             </Link>

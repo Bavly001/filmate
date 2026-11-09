@@ -40,82 +40,108 @@ export const MovieCard: React.FC<MovieCardProps> = ({ movie, onPlayTrailer }) =>
   return (
     <Link
       href={`/movies/${movie.id}`}
-      className="group relative rounded-2xl overflow-hidden bg-[#10121B] border border-amber-500/15 hover:border-amber-400/50 hover:shadow-[0_0_25px_rgba(245,158,11,0.2)] transition-all duration-300 flex flex-col justify-between cursor-pointer block"
+      className="group relative rounded-3xl overflow-hidden bg-[#10121B] border border-amber-500/20 hover:border-amber-400 hover:shadow-[0_0_20px_rgba(229,137,10,0.35)] transition-all duration-500 flex flex-col justify-between cursor-pointer block h-[480px] sm:h-[500px]"
     >
-      {/* Poster Wrap */}
-      <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#07080B]">
-        <ImageWithFallback
+      {/* Blurred Rotated Background Poster (from MoviesAngularProject card style) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={movie.posterUrl}
-          alt={movie.title}
-          fallbackTitle={movie.title}
+          alt=""
           loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          className="w-full h-full object-cover filter blur-md opacity-20 transform -rotate-45 scale-150 group-hover:rotate-0 group-hover:scale-100 group-hover:opacity-30 group-hover:blur-none transition-all duration-700 ease-out"
         />
-
-        {/* Top Badges */}
-        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
-          <div className="px-2 py-0.5 rounded-lg bg-[#07080B]/90 backdrop-blur-md border border-amber-500/30 text-amber-400 text-xs font-bold flex items-center gap-1 shadow-sm">
-            <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-            <span>{movie.rating.toFixed(1)}</span>
-          </div>
-        </div>
-
-        {movie.ageRating === '18+' && (
-          <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-lg bg-red-950/80 border border-red-500/40 text-red-400 text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md z-10">
-            18+
-          </div>
-        )}
-
-        {/* Play Trailer Floating Button */}
-        {trailerKey && (
-          <button
-            type="button"
-            title="Play Trailer"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onPlayTrailer?.(trailerKey, movie);
-            }}
-            className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-110 active:scale-95 transition-all duration-300 z-20 cursor-pointer"
-          >
-            <Play className="w-4 h-4 fill-black ml-0.5" />
-          </button>
-        )}
-
-        {/* Platform tag overlay on bottom left */}
-        {movie.platforms && movie.platforms.length > 0 && (
-          <div className="absolute bottom-3 left-3 right-14 pointer-events-none flex flex-wrap gap-1 z-10">
-            {movie.platforms.slice(0, 2).map((p, idx) => (
-              <span
-                key={`${p}-${idx}`}
-                className={`px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight border backdrop-blur-md shadow-sm ${getPlatformBadgeColor(
-                  p
-                )}`}
-              >
-                {p}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {/* Dark gradient fade on bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#10121B] via-transparent to-transparent opacity-85 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#10121B] via-[#10121B]/70 to-transparent" />
       </div>
 
-      {/* Info Body */}
-      <div className="p-4 flex flex-col gap-1.5 flex-1 justify-between bg-[#10121B]">
+      {/* Poster Image Frame */}
+      <div className="relative aspect-[3/4] w-full p-3 z-10">
+        <div className="relative w-full h-full rounded-2xl overflow-hidden bg-[#07080B] shadow-lg group-hover:-translate-y-2 group-hover:shadow-[0_0_15px_rgba(229,137,10,0.35)] transition-all duration-500">
+          <ImageWithFallback
+            src={movie.posterUrl}
+            alt={movie.title}
+            fallbackTitle={movie.title}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+
+          {/* Top Badges */}
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 z-10">
+            <div className="px-2.5 py-1 rounded-full bg-[#07080B]/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-xs font-black flex items-center gap-1 shadow-sm">
+              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+              <span>{movie.rating.toFixed(1)}</span>
+            </div>
+          </div>
+
+          {movie.ageRating === '18+' && (
+            <div className="absolute top-2.5 right-2.5 px-2.5 py-0.5 rounded-full bg-red-950/80 border border-red-500/40 text-red-400 text-[10px] font-extrabold uppercase tracking-wider backdrop-blur-md z-10">
+              18+
+            </div>
+          )}
+
+          {/* Play Trailer Floating Button */}
+          {trailerKey && (
+            <button
+              type="button"
+              title="Play Trailer"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onPlayTrailer?.(trailerKey, movie);
+              }}
+              className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black flex items-center justify-center shadow-[0_0_15px_rgba(229,137,10,0.6)] group-hover:scale-110 active:scale-95 transition-all duration-300 z-20 cursor-pointer"
+            >
+              <Play className="w-4 h-4 fill-black ml-0.5" />
+            </button>
+          )}
+
+          {/* Platform badges */}
+          {movie.platforms && movie.platforms.length > 0 && (
+            <div className="absolute bottom-3 left-3 right-14 pointer-events-none flex flex-wrap gap-1 z-10">
+              {movie.platforms.slice(0, 2).map((p, idx) => (
+                <span
+                  key={`${p}-${idx}`}
+                  className={`px-2 py-0.5 rounded-full text-[10px] font-bold tracking-tight border backdrop-blur-md shadow-sm ${getPlatformBadgeColor(
+                    p
+                  )}`}
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info Body / Hover Sliding Details Drawer (MoviesAngular style) */}
+      <div className="relative z-10 p-4 pt-1 flex flex-col justify-between flex-1">
         <div>
-          <h3 className="font-extrabold text-base text-white tracking-tight leading-snug line-clamp-1 group-hover:text-amber-400 transition-colors">
-            {movie.title}
-          </h3>
-          <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">
+          <div className="flex items-center justify-between gap-2">
+            <h3 className="font-black text-base text-white tracking-tight leading-snug line-clamp-1 group-hover:text-amber-400 transition-colors">
+              {movie.title}
+            </h3>
+            <span className="text-xs font-semibold text-amber-500/90 shrink-0">
+              ({movie.year || '2024'})
+            </span>
+          </div>
+
+          <p className="text-xs text-zinc-400 mt-1 line-clamp-1">
             {movie.genres?.join(' • ') || 'Cinema'}
           </p>
+
+          {/* Plot snippet preview (slides up / visible on hover) */}
+          {movie.synopsis && (
+            <p className="text-[11px] text-zinc-300 line-clamp-2 mt-2 leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {movie.synopsis}
+            </p>
+          )}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-zinc-500 pt-2 border-t border-white/5">
-          <span>{movie.year || '2024'}</span>
+        <div className="flex items-center justify-between text-xs text-zinc-400 pt-2 border-t border-amber-500/10 mt-2">
           <span>{movie.runtime ? `${movie.runtime} min` : movie.duration || 'Feature'}</span>
+          <span className="text-amber-400 font-bold group-hover:underline flex items-center gap-1 text-[11px]">
+            More info &rarr;
+          </span>
         </div>
       </div>
     </Link>

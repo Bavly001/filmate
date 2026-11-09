@@ -68,7 +68,7 @@ export default function ContactPage() {
                     setSubmitted(false);
                     setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
                   }}
-                  className="mt-4 px-6 py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs transition-colors"
+                  className="mt-4 px-6 py-2.5 rounded-full bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-bold text-xs transition-colors"
                 >
                   Send Another Inquiry
                 </button>
@@ -136,7 +136,7 @@ export default function ContactPage() {
                 <button
                   type="submit"
                   aria-label="Send message"
-                  className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm shadow-[0_0_20px_rgba(245,158,11,0.4)] flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer"
+                  className="w-full py-3.5 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black font-extrabold text-sm shadow-[0_0_20px_rgba(229,137,10,0.4)] flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer"
                 >
                   <Send className="w-4 h-4 fill-black" />
                   <span>Send Message</span>
@@ -145,8 +145,76 @@ export default function ContactPage() {
             )}
           </div>
 
-          {/* Contact Details & Hubs */}
+          {/* Contact Details & Direct Creator Connect (from MoviesAngularProject & Gold-cinema) */}
           <div className="lg:col-span-5 space-y-6">
+            {/* Direct Connect with Bavly Ashraf */}
+            <div className="p-6 rounded-3xl bg-[#141722] border border-amber-500/30 shadow-xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full border-2 border-amber-500/60 bg-amber-500/15 flex items-center justify-center text-amber-400 font-black text-sm">
+                  BA
+                </div>
+                <div>
+                  <h3 className="font-black text-white text-base">Bavly Ashraf</h3>
+                  <p className="text-xs text-amber-400 font-semibold">Creator & Developer</p>
+                </div>
+              </div>
+
+              <p className="text-xs text-zinc-300 leading-relaxed">
+                Connect directly on professional platforms, inspect the source repositories on GitHub,
+                or message via WhatsApp.
+              </p>
+
+              {/* Social Circles (identical links from MoviesAngular & Gold-cinema) */}
+              <div className="pt-2 flex flex-wrap gap-2.5">
+                <a
+                  href="https://github.com/Bavly001"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/bavly-ashraf-26751b285/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  LinkedIn
+                </a>
+                <a
+                  href="https://wa.me/201271931937"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  WhatsApp
+                </a>
+                <a
+                  href="mailto:a_bavly@yahoo.com"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  Email
+                </a>
+                <a
+                  href="https://www.instagram.com/a.bavly/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  Instagram
+                </a>
+                <a
+                  href="https://www.facebook.com/bavly.ashraf.7/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-[#07080B] border border-amber-500/30 hover:border-amber-400 text-zinc-200 hover:text-amber-300 text-xs font-bold transition-all shadow-sm"
+                >
+                  Facebook
+                </a>
+              </div>
+            </div>
+
             <div className="p-6 rounded-3xl bg-[#10121B] border border-amber-500/15 space-y-6">
               <div className="flex items-start gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#07080B] border border-amber-500/30 flex items-center justify-center text-amber-400 flex-shrink-0">
@@ -180,19 +248,6 @@ export default function ContactPage() {
                   <p className="text-[11px] text-zinc-400 mt-1">Film curation and technical nodes</p>
                 </div>
               </div>
-            </div>
-
-            {/* AI Assistant Callout */}
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-[#10121B] to-[#151926] border border-amber-500/25 shadow-lg">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-bold uppercase tracking-wider mb-2">
-                <Sparkles className="w-4 h-4" />
-                <span>Instant Movie Advice</span>
-              </div>
-              <h4 className="font-extrabold text-white text-base mb-1">Looking for a recommendation?</h4>
-              <p className="text-xs text-zinc-300 leading-relaxed mb-4">
-                You do not need to wait for email! Click the gold orb in the bottom-right corner to
-                chat immediately with Mate AI.
-              </p>
             </div>
           </div>
         </div>

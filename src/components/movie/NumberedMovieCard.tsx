@@ -33,10 +33,10 @@ export const NumberedMovieCard: React.FC<NumberedMovieCardProps> = ({
         {rank}
       </span>
 
-      {/* Foreground Vertical Poster Card */}
+      {/* Foreground Vertical Poster Card with Gold-cinema hover glow */}
       <Link
         href={`/movies/${movie.id}`}
-        className="relative z-10 w-full rounded-2xl overflow-hidden bg-[#10121B] border border-amber-500/15 group-hover:border-amber-400/50 group-hover:shadow-[0_0_25px_rgba(245,158,11,0.25)] transition-all duration-300 block"
+        className="relative z-10 w-full rounded-3xl overflow-hidden bg-[#10121B] border-2 border-transparent group-hover:border-amber-400 group-hover:shadow-[0_0_20px_rgba(229,137,10,0.45)] group-hover:-translate-y-2 transition-all duration-500 block"
       >
         <div className="relative aspect-[2/3] w-full overflow-hidden bg-[#07080B]">
           <ImageWithFallback
@@ -44,11 +44,11 @@ export const NumberedMovieCard: React.FC<NumberedMovieCardProps> = ({
             alt={movie.title}
             fallbackTitle={movie.title}
             loading="lazy"
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
           />
 
           {/* Top Rating Badge */}
-          <div className="absolute top-2.5 left-2.5 flex items-center gap-1 z-10 px-2 py-0.5 rounded-lg bg-[#07080B]/90 backdrop-blur-md border border-amber-500/30 text-amber-400 text-xs font-bold shadow-sm">
+          <div className="absolute top-2.5 left-2.5 flex items-center gap-1 z-10 px-2.5 py-1 rounded-full bg-[#07080B]/90 backdrop-blur-md border border-amber-500/40 text-amber-300 text-xs font-black shadow-sm">
             <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
             <span>{movie.rating.toFixed(1)}</span>
           </div>
@@ -63,7 +63,7 @@ export const NumberedMovieCard: React.FC<NumberedMovieCardProps> = ({
                 e.stopPropagation();
                 onPlayTrailer?.(trailerKey, movie);
               }}
-              className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.5)] group-hover:scale-110 active:scale-95 transition-all duration-300 z-20 cursor-pointer"
+              className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-amber-500 text-black flex items-center justify-center shadow-[0_0_15px_rgba(229,137,10,0.6)] group-hover:scale-110 active:scale-95 transition-all duration-300 z-20 cursor-pointer"
             >
               <Play className="w-4 h-4 fill-black ml-0.5" />
             </button>
@@ -75,7 +75,7 @@ export const NumberedMovieCard: React.FC<NumberedMovieCardProps> = ({
 
         {/* Info Body */}
         <div className="p-3 bg-[#10121B]">
-          <h3 className="font-bold text-sm text-white tracking-tight leading-snug line-clamp-1 group-hover:text-amber-400 transition-colors">
+          <h3 className="font-black text-sm text-white tracking-tight leading-snug line-clamp-1 group-hover:text-amber-400 transition-colors">
             {movie.title}
           </h3>
           <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">
