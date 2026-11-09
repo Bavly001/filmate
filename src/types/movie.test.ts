@@ -1,47 +1,50 @@
 import { describe, it, expect } from 'vitest';
-import { Movie, MatePreferences, TrailerItem } from './movie';
+import { Movie, FilterCriteria, ChatMessage } from './movie';
 
-describe('Movie Types', () => {
-  it('validates a well-formed movie record', () => {
+describe('Movie Types Contract', () => {
+  it('validates a movie with prefixed ID and source discriminator', () => {
     const movie: Movie = {
-      id: 'm1',
-      title: 'Inception',
-      year: 2010,
-      rating: 8.8,
-      posterUrl: 'https://example.com/poster.jpg',
-      genres: ['Sci-Fi', 'Action', 'Mystery'],
-      platforms: ['Netflix'],
-      ageRating: '18+',
-      venue: 'both',
-      synopsis: 'A thief steals corporate secrets through dream-sharing tech.',
-      youtubeTrailerKey: 'YoHD9XEInc0',
-    };
-    expect(movie.title).toBe('Inception');
-    expect(movie.platforms).toContain('Netflix');
-    expect(movie.genres).toContain('Sci-Fi');
-  });
-
-  it('validates a well-formed trailer item from public feed', () => {
-    const trailer: TrailerItem = {
-      id: 'p1yj',
+      id: 'kc-1381071',
       title: 'Godzilla Minus Zero',
-      youtubeVideoId: 'NOT42AUSzCs',
-      thumbnailUrl: 'https://img.youtube.com/vi/NOT42AUSzCs/maxresdefault.jpg',
-      genres: ['Action', 'Horror', 'Sci-Fi'],
-      views: 198159,
-      publishedAt: '2026-11-06T16:16:38+01:00',
+      rating: 8.4,
+      posterUrl: 'https://cdn.kinocheck.com/i/8qwlxv0cge.jpg',
+      backdropUrl: 'https://img.youtube.com/vi/E-Q2tEgJ1ZI/maxresdefault.jpg',
+      genres: ['Action', 'Sci-Fi'],
+      source: 'kinocheck',
+      youtubeVideoId: 'E-Q2tEgJ1ZI',
+      synopsis: 'Cinema premiere trailer description',
     };
-    expect(trailer.youtubeVideoId).toBe('NOT42AUSzCs');
+
+    expect(movie.id.startsWith('kc-')).toBe(true);
+    expect(movie.source).toBe('kinocheck');
+    expect((movie as unknown as Record<string, unknown>).upcoming).toBeUndefined();
   });
 
-  it('validates mate preferences', () => {
-    const prefs: MatePreferences = {
-      moods: ['Action', 'Comedy'],
-      company: 'partner',
-      venue: 'cinema',
-      ageRating: '18+',
+  it('validates FilterCriteria has no upcomingOnly property', () => {
+    const criteria: FilterCriteria = {
+      genres: ['Action'],
+      searchQuery: 'Batman',
     };
-    expect(prefs.moods).toHaveLength(2);
-    expect(prefs.company).toBe('partner');
+    expect((criteria as unknown as Record<string, unknown>).upcomingOnly).toBeUndefined();
+  });
+
+  it('validates ChatMessage structure for Mate Messenger popup', () => {
+    const message: ChatMessage = {
+      id: 'msg-1',
+      role: 'mate',
+      text: 'Here is a cinematic thriller for tonight:',
+      timestamp: new Date().toISOString(),
+      recommendation: {
+        id: 'tvm-975',
+        title: 'Batman',
+        rating: 7.8,
+        posterUrl: 'https://image.com/batman.jpg',
+        genres: ['Action'],
+        source: 'tvmaze',
+      },
+    };
+    expect(message.role).toBe('mate');
+    expect(message.recommendation?.title).toBe('Batman');
+    expect(message.recommendation?.source).toBe('tvmaze');
   });
 });
