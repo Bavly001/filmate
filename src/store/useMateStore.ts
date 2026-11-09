@@ -1,10 +1,20 @@
 import { create } from 'zustand';
-import { Movie, MatePreferences, MateStep, CompanyType, VenueType, AgeRating } from '@/types/movie';
-import { curatedMovies } from '@/data/curatedMovies';
+import {
+  Movie,
+  ChatMessage,
+  MatePreferences,
+  MateStep,
+  CompanyType,
+  VenueType,
+  AgeRating,
+} from '@/types/movie';
+import { fetchCatalogMovies } from '@/services/movieApi';
 
 interface MateState {
   isDrawerOpen: boolean;
   step: MateStep;
+  messages: ChatMessage[];
+  isTyping: boolean;
   preferences: MatePreferences;
   activeCategories: string[];
   seenMovieIds: string[];
@@ -15,6 +25,10 @@ interface MateState {
   // Actions
   openDrawer: () => void;
   closeDrawer: () => void;
+  toggleDrawer: () => void;
+  sendMessage: (text: string) => Promise<void>;
+  selectQuickVibe: (vibe: string) => Promise<void>;
+  resetChat: () => void;
   setStep: (step: MateStep) => void;
   toggleMood: (mood: string) => void;
   setCompany: (company: CompanyType) => void;
@@ -28,6 +42,13 @@ interface MateState {
   resetQuiz: () => void;
 }
 
+const initialGreeting: ChatMessage = {
+  id: 'mate-welcome',
+  role: 'mate',
+  text: "Welcome to FilmMate! I'm your luxury cinema companion. Tell me what genre or mood you are craving, or pick a vibe below.",
+  timestamp: new Date().toISOString(),
+};
+
 const initialPreferences: MatePreferences = {
   moods: [],
   company: 'solo',
@@ -37,7 +58,9 @@ const initialPreferences: MatePreferences = {
 
 export const useMateStore = create<MateState>((set, get) => ({
   isDrawerOpen: false,
-  step: 'idle',
+  step: 'chatting',
+  messages: [{ ...initialGreeting }],
+  isTyping: false,
   preferences: { ...initialPreferences },
   activeCategories: [],
   seenMovieIds: [],
@@ -45,8 +68,85 @@ export const useMateStore = create<MateState>((set, get) => ({
   rationale: '',
   isAccepted: false,
 
-  openDrawer: () => set({ isDrawerOpen: true, step: get().step === 'idle' ? 'mood' : get().step }),
+  openDrawer: () => set({ isDrawerOpen: true }),
   closeDrawer: () => set({ isDrawerOpen: false }),
+  toggleDrawer: () => set({ isDrawerOpen: !get().isDrawerOpen }),
+
+  sendMessage: async (text: string) => {
+    if (!text.trim()) return;
+
+    const userMessage: ChatMessage = {
+      id: `usr-${Date.now()}`,
+      role: 'user',
+      text: text.trim(),
+      timestamp: new Date().toISOString(),
+    };
+
+    set({
+      messages: [...get().messages, userMessage],
+      isTyping: true,
+    });
+
+    try {
+      // Query live public API for matching movies
+      const cleaned = text.trim();
+      const results = await fetchCatalogMovies({ query: cleaned });
+      const candidate = results.length > 0 ? results[0] : null;
+
+      // Also fallback to a popular genre query if zero results
+      let fallbackMovie: Movie | null = candidate;
+      if (!fallbackMovie) {
+        const broad = await fetchCatalogMovies({ page: 0 });
+        fallbackMovie = broad.length > 0 ? broad[Math.floor(Math.random() * Math.min(5, broad.length))] : null;
+      }
+
+      const mateReply: ChatMessage = {
+        id: `mate-${Date.now()}`,
+        role: 'mate',
+        text: fallbackMovie
+          ? `I picked this cinematic experience for "${cleaned}":`
+          : "I couldn't locate an exact match, but check out our curated top rated titles!",
+        timestamp: new Date().toISOString(),
+        recommendation: fallbackMovie || undefined,
+      };
+
+      set({
+        messages: [...get().messages, mateReply],
+        currentRecommendation: fallbackMovie,
+        isTyping: false,
+      });
+    } catch (error) {
+      console.error('Error fetching Mate recommendation:', error);
+      set({
+        messages: [
+          ...get().messages,
+          {
+            id: `mate-err-${Date.now()}`,
+            role: 'mate',
+            text: 'I had a brief connection issue reaching the movie database. Please try again!',
+            timestamp: new Date().toISOString(),
+          },
+        ],
+        isTyping: false,
+      });
+    }
+  },
+
+  selectQuickVibe: async (vibe: string) => {
+    await get().sendMessage(vibe);
+  },
+
+  resetChat: () => {
+    set({
+      messages: [{ ...initialGreeting, timestamp: new Date().toISOString() }],
+      isTyping: false,
+      currentRecommendation: null,
+      preferences: { ...initialPreferences },
+      activeCategories: [],
+      seenMovieIds: [],
+    });
+  },
+
   setStep: (step) => set({ step }),
 
   toggleMood: (mood) => {
@@ -65,9 +165,7 @@ export const useMateStore = create<MateState>((set, get) => ({
 
   setCompany: (company) => {
     const currentAge = get().preferences.ageRating;
-    // Rule: Family & kids automatically enforces All Ages
     const ageRating = company === 'family' ? 'All Ages' : currentAge;
-
     set({
       preferences: {
         ...get().preferences,
@@ -87,7 +185,6 @@ export const useMateStore = create<MateState>((set, get) => ({
   },
 
   setAgeRating: (ageRating) => {
-    // If family is chosen, don't allow 18+
     if (get().preferences.company === 'family') {
       set({
         preferences: {
@@ -105,105 +202,23 @@ export const useMateStore = create<MateState>((set, get) => ({
     });
   },
 
-  startAnalysis: async (minDurationMs = 2800) => {
+  startAnalysis: async (minDurationMs = 500) => {
     set({ step: 'analyzing', isAccepted: false });
-    const startTime = Date.now();
-
-    // Prepare active categories from chosen moods (or default to popular categories if none picked)
-    const initialMoods =
-      get().preferences.moods.length > 0
-        ? [...get().preferences.moods]
-        : ['Action', 'Drama'];
-    set({ activeCategories: initialMoods });
-
-    // Enforce artificial delay for suspenseful analysis
-    const elapsed = Date.now() - startTime;
-    const remaining = Math.max(0, minDurationMs - elapsed);
-
-    await new Promise((resolve) => setTimeout(resolve, remaining));
-
+    await new Promise((resolve) => setTimeout(resolve, minDurationMs));
     get().computeRecommendation();
   },
 
-  computeRecommendation: () => {
-    const { activeCategories, preferences, seenMovieIds } = get();
-
-    // Find candidates matching active categories, age rating, and venue
-    const findCandidates = (categories: string[]) => {
-      return curatedMovies.filter((movie) => {
-        // Exclude previously rejected/shown movies
-        if (seenMovieIds.includes(movie.id)) return false;
-
-        // Age rating check
-        if (preferences.ageRating && movie.ageRating !== preferences.ageRating) {
-          return false;
-        }
-
-        // Venue check
-        if (preferences.venue !== 'both') {
-          if (preferences.venue === 'cinema' && movie.venue === 'home') return false;
-          if (preferences.venue === 'home' && movie.venue === 'cinema') return false;
-        }
-
-        // Category intersection match
-        if (categories.length > 0) {
-          const matches = categories.every((cat) =>
-            movie.genres.some((mg) => mg.toLowerCase() === cat.toLowerCase())
-          );
-          if (!matches) return false;
-        }
-
-        return true;
-      });
-    };
-
-    let candidates = findCandidates(activeCategories);
-
-    // If no candidate matches strict intersection, relax categories progressively
-    let workingCategories = [...activeCategories];
-    while (candidates.length === 0 && workingCategories.length > 1) {
-      workingCategories = workingCategories.slice(0, workingCategories.length - 1);
-      candidates = findCandidates(workingCategories);
-    }
-
-    // If still 0, try with any single remaining category or broadest match
-    if (candidates.length === 0 && workingCategories.length === 1) {
-      candidates = findCandidates([]);
-    }
-
-    if (candidates.length > 0) {
-      // Pick a random candidate
-      const randomIndex = Math.floor(Math.random() * candidates.length);
-      const chosen = candidates[randomIndex];
-
-      // Formulate rationale
-      const moodText =
-        workingCategories.length > 0
-          ? workingCategories.join(' & ')
-          : 'Trending';
-      const companyText =
-        preferences.company === 'partner'
-          ? 'date night'
-          : preferences.company === 'family'
-          ? 'family movie time'
-          : preferences.company === 'friends'
-          ? 'a fun group watch'
-          : 'a solo movie night';
-
-      const rationale = `Curated for your ${moodText} mood, perfect for ${companyText}.`;
-
+  computeRecommendation: async () => {
+    try {
+      const broad = await fetchCatalogMovies({ page: 0 });
+      const chosen = broad.length > 0 ? broad[0] : null;
       set({
         currentRecommendation: chosen,
-        activeCategories: workingCategories,
-        seenMovieIds: [...seenMovieIds, chosen.id],
-        rationale,
+        rationale: 'Curated for your cinematic evening.',
         step: 'result',
       });
-    } else {
-      set({
-        currentRecommendation: null,
-        step: 'exhausted',
-      });
+    } catch {
+      set({ step: 'idle' });
     }
   },
 
@@ -212,31 +227,7 @@ export const useMateStore = create<MateState>((set, get) => ({
   },
 
   rejectRecommendation: () => {
-    const { activeCategories, seenMovieIds, currentRecommendation } = get();
-    const updatedSeen = currentRecommendation
-      ? [...seenMovieIds, currentRecommendation.id]
-      : seenMovieIds;
-
-    set({ seenMovieIds: updatedSeen });
-
-    // Check if there are other candidates in current category
-    const remainingInPool = curatedMovies.filter((movie) => {
-      if (updatedSeen.includes(movie.id)) return false;
-      return activeCategories.every((cat) =>
-        movie.genres.some((mg) => mg.toLowerCase() === cat.toLowerCase())
-      );
-    });
-
-    if (remainingInPool.length > 0) {
-      get().computeRecommendation();
-    } else if (activeCategories.length > 1) {
-      // Relax category by dropping the last
-      get().relaxCategories();
-      get().computeRecommendation();
-    } else {
-      // All exhausted
-      set({ step: 'exhausted', currentRecommendation: null });
-    }
+    get().computeRecommendation();
   },
 
   relaxCategories: () => {
@@ -247,14 +238,7 @@ export const useMateStore = create<MateState>((set, get) => ({
   },
 
   resetQuiz: () => {
-    set({
-      step: 'idle',
-      preferences: { ...initialPreferences },
-      activeCategories: [],
-      seenMovieIds: [],
-      currentRecommendation: null,
-      rationale: '',
-      isAccepted: false,
-    });
+    get().resetChat();
+    set({ step: 'idle' });
   },
 }));
