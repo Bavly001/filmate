@@ -79,4 +79,5 @@ export type MateStep =
   | 'idle'
   | 'chatting'
   | 'analyzing'
-  | 'result';
+  | 'result'
+  | 'exhausted';

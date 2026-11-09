@@ -70,7 +70,7 @@ export const MateResultCard: React.FC = () => {
           {currentRecommendation.youtubeTrailerKey && (
             <button
               onClick={() =>
-                openTrailerModal(currentRecommendation.youtubeTrailerKey, currentRecommendation)
+                openTrailerModal(currentRecommendation.youtubeTrailerKey!, currentRecommendation)
               }
               className="absolute bottom-3 right-3 px-3 py-1.5 rounded-xl bg-sunset hover:bg-sunset-hover text-white text-xs font-bold flex items-center gap-1.5 shadow-neon-sunset hover:scale-105 transition-transform cursor-pointer"
             >
@@ -102,7 +102,7 @@ export const MateResultCard: React.FC = () => {
           </p>
 
           <div className="flex flex-wrap gap-1.5 mb-2">
-            {currentRecommendation.platforms.map((p, idx) => (
+            {currentRecommendation.platforms?.map((p, idx) => (
               <span
                 key={`${p}-${idx}`}
                 className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-sunset/15 border border-sunset/30 text-sunset"

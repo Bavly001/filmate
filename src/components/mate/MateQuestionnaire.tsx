@@ -94,11 +94,11 @@ export const MateQuestionnaire: React.FC = () => {
     startAnalysis(2800);
   };
 
-  const getCompanyLabel = (c: CompanyType) =>
-    companyChoices.find((x) => x.id === c)?.label || c;
+  const getCompanyLabel = (c?: CompanyType) =>
+    companyChoices.find((x) => x.id === c)?.label || c || '';
 
-  const getVenueLabel = (v: VenueType) =>
-    venueChoices.find((x) => x.id === v)?.label || v;
+  const getVenueLabel = (v?: VenueType) =>
+    venueChoices.find((x) => x.id === v)?.label || v || '';
 
   return (
     <div className="flex flex-col gap-5 py-2">
