@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141724"/>
+      <stop offset="100%" stop-color="#07080B"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#bg-grad)"/>
+  <rect x="2" y="2" width="60" height="60" rx="14" fill="none" stroke="url(#gold-grad)" stroke-width="2.5" opacity="0.85"/>
+  <path d="M22 16 H44 V23 H30 V29 H40 V36 H30 V48 H22 Z" fill="url(#gold-grad)"/>
+  <polygon points="46,14 48,19 53,21 48,23 46,28 44,23 39,21 44,19" fill="#FDE68A"/>
+</svg>

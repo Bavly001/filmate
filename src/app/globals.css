@@ -3,10 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --bg-dark: #08070d;
-  --accent-sunset: #ff6b2b;
-  --accent-cyber: #e040fb;
-  --accent-gold: #ffa726;
+  --bg-dark: #07080B;
+  --bg-surface: #10121B;
+  --accent-gold: #F59E0B;
+  --accent-gold-light: #FDE68A;
+  --accent-gold-dark: #D97706;
 }
 
 body {
@@ -17,16 +18,16 @@ body {
   min-height: 100vh;
 }
 
-/* Glassmorphism helpers */
+/* WatchIT Midnight Gold Glassmorphism */
 .glass-panel {
-  background: rgba(18, 17, 26, 0.82);
+  background: rgba(16, 18, 27, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 107, 43, 0.22);
+  border: 1px solid rgba(245, 158, 11, 0.18);
 }
 
 .glass-card {
-  background: rgba(14, 13, 22, 0.75);
+  background: rgba(16, 18, 27, 0.82);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -34,25 +35,25 @@ body {
 }
 
 .glass-card:hover {
-  border-color: rgba(255, 107, 43, 0.55);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 24px rgba(255, 107, 43, 0.3);
+  border-color: rgba(245, 158, 11, 0.45);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.85), 0 0 20px rgba(245, 158, 11, 0.2);
 }
 
-/* Custom Scrollbar */
+/* Custom Gold Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #08070d;
+  background: #07080B;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 107, 43, 0.3);
+  background: rgba(245, 158, 11, 0.25);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 107, 43, 0.6);
+  background: rgba(245, 158, 11, 0.55);
 }

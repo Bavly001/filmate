@@ -3,8 +3,13 @@ import './globals.css';
 import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: 'Filmate | Smart Movie Companion & Streaming Catalog',
-  description: 'Discover trending movies, upcoming cinema releases, and get AI-powered recommendations matching your exact feelings.',
+  title: 'Filmate | Luxury Cinema & AI Movie Companion',
+  description: 'Experience premier cinema titles, official 4K trailers, and instant AI concierge recommendations with Filmate.',
+  icons: {
+    icon: '/icon.svg',
+    shortcut: '/icon.svg',
+    apple: '/icon.svg',
+  },
 };
 
 export default function RootLayout({
@@ -14,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-dark-bg text-gray-100 antialiased selection:bg-sunset selection:text-white">
+      <body className="bg-obsidian-canvas text-gray-100 antialiased selection:bg-gold selection:text-black">
         <Providers>
           {children}
         </Providers>
