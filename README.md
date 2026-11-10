@@ -1,6 +1,13 @@
 # Filmate 🎬
 
-> **Filmate** is a modern cinematic discovery platform and smart assistant designed to help you discover the perfect film or TV show matching your exact mood, company, and viewing preferences — without endless scrolling or decision paralysis.
+[![Live Demo](https://img.shields.io/badge/Live_Demo-filmate--assistant.vercel.app-E50914?style=for-the-badge&logo=vercel&logoColor=white)](https://filmate-assistant.vercel.app)
+[![Next.js](https://img.shields.io/badge/Next.js_14-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+
+> **Filmate** is a smart cinematic discovery assistant that helps you choose the movie that matches your current mood, company, and viewing preferences — without endless scrolling or decision paralysis.
+
+🔗 **Live Application**: [https://filmate-assistant.vercel.app](https://filmate-assistant.vercel.app)
 
 ---
 
