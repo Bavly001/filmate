@@ -4,6 +4,8 @@ out/
 build/
 dist/
 .superpowers/
+docs/superpowers/
+superpowers/
 .env
 .env*.local
 .env.local
