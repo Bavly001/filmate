@@ -32,15 +32,28 @@ export default function MoviesCategory({
   const movies = propMovies || fetchedMovies || [];
 
   useEffect(() => {
-    if (categoryRef.current) {
-      setScroll(categoryRef.current.scrollLeft);
-      setMaxScroll(
-        categoryRef.current.scrollWidth -
-          categoryRef.current.clientWidth -
-          0.5
-      );
-    }
-  }, [movies]);
+    const updateScrollBounds = () => {
+      if (categoryRef.current) {
+        setScroll(categoryRef.current.scrollLeft);
+        setMaxScroll(
+          categoryRef.current.scrollWidth -
+            categoryRef.current.clientWidth -
+            0.5
+        );
+      }
+    };
+
+    updateScrollBounds();
+    const frameId = requestAnimationFrame(updateScrollBounds);
+    const timerId = setTimeout(updateScrollBounds, 100);
+    window.addEventListener('resize', updateScrollBounds);
+
+    return () => {
+      cancelAnimationFrame(frameId);
+      clearTimeout(timerId);
+      window.removeEventListener('resize', updateScrollBounds);
+    };
+  }, [movies, isLoading]);
 
   const scrollHandler = (scrollDir = 1) => {
     if (categoryRef.current) {
@@ -75,11 +88,16 @@ export default function MoviesCategory({
         onScroll={() => {
           if (categoryRef.current) {
             setScroll(categoryRef.current.scrollLeft);
+            setMaxScroll(
+              categoryRef.current.scrollWidth -
+                categoryRef.current.clientWidth -
+                0.5
+            );
           }
         }}
         className="w-full h-[30rem] absolute hidden lg:flex items-center overflow-x-scroll scroll-smooth no-scroll-bar pb-10"
       >
-        <div className="flex flex-nowrap h-96 items-center gap-x-3 px-10">
+        <div className="flex flex-nowrap h-96 items-center gap-x-3 absolute px-10">
           {isLoading && movies.length === 0 ? (
             renderSkeletons()
           ) : (
@@ -101,7 +119,7 @@ export default function MoviesCategory({
             type="button"
             aria-label="Scroll right"
             className={`${arrowBtnClasses} left-[96%]`}
-            onClick={() => scrollHandler(1)}
+            onClick={() => scrollHandler()}
           >
             <FaArrowRight />
           </button>
