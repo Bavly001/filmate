@@ -43,7 +43,9 @@ export default function MovieCard({
   });
   const [scrollable, setScrollable] = useState(false);
   const [opened, setOpened] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [justify, setJustify] = useState('justify-center');
+  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     function handleWindowSize() {
@@ -57,35 +59,49 @@ export default function MovieCard({
     window.addEventListener('resize', handleWindowSize);
     return () => {
       window.removeEventListener('resize', handleWindowSize);
+      if (hoverTimerRef.current) {
+        clearTimeout(hoverTimerRef.current);
+      }
     };
   }, []);
 
   const handleMouseEnter = () => {
     if (link) return;
-    if (windowSize.w >= 1024 && cardRef.current) {
-      const cardDetails = cardRef.current.getBoundingClientRect();
-      const checkWidth = () => {
-        if (cardDetails.width + cardDetails.x > windowSize.w) {
-          return 'justify-end';
-        }
-        if (cardDetails.x <= 0) {
-          return 'justify-start';
-        }
-        return 'justify-center';
-      };
+    if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
 
-      if (justify === 'justify-center') {
-        setJustify(checkWidth());
+    hoverTimerRef.current = setTimeout(() => {
+      setIsHovered(true);
+
+      if (windowSize.w >= 1024 && cardRef.current) {
+        const cardDetails = cardRef.current.getBoundingClientRect();
+        const checkWidth = () => {
+          if (cardDetails.width + cardDetails.x > windowSize.w) {
+            return 'justify-end';
+          }
+          if (cardDetails.x <= 0) {
+            return 'justify-start';
+          }
+          return 'justify-center';
+        };
+
+        if (justify === 'justify-center') {
+          setJustify(checkWidth());
+        }
       }
-    }
 
-    if (cardRef.current) {
-      setScrollable(cardRef.current.scrollHeight > cardRef.current.clientHeight);
-    }
+      if (cardRef.current) {
+        setScrollable(cardRef.current.scrollHeight > cardRef.current.clientHeight);
+      }
+    }, 400);
   };
 
   const handleMouseLeave = () => {
     if (link) return;
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+    setIsHovered(false);
     setJustify('justify-center');
     setOpened(false);
   };
@@ -131,6 +147,7 @@ export default function MovieCard({
       <AnimatedCard
         id={id}
         opened={opened}
+        isHovered={isHovered}
         cardRef={cardRef}
         scrollable={scrollable}
         setOpened={(val) => setOpened(val)}

@@ -7,7 +7,7 @@ import { MovieItem } from '@/types/tmdb';
 import { useCategoryMedia } from '@/hooks/useCategoryMedia';
 
 const arrowBtnClasses =
-  'sticky bg-zinc-700 border border-zinc-500 flex justify-center items-center shadow text-white w-9 aspect-square rounded-full z-30 cursor-pointer hover:bg-zinc-600 transition-colors';
+  'sticky bg-zinc-700/90 hover:bg-zinc-600 border border-zinc-500 flex justify-center items-center shadow-2xl text-white w-9 aspect-square rounded-full z-[60] cursor-pointer transition-all hover:scale-110 active:scale-95';
 
 interface MoviesCategoryProps {
   title: string;

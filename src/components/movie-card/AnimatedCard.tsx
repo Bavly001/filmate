@@ -9,6 +9,7 @@ interface AnimatedCardProps {
   href: string;
   title: string;
   opened: boolean;
+  isHovered?: boolean;
   cardRef: React.RefObject<HTMLDivElement>;
   overview?: string;
   setOpened: (val: boolean) => void;
@@ -24,6 +25,7 @@ export default function AnimatedCard({
   href,
   title,
   opened,
+  isHovered = false,
   cardRef,
   overview,
   setOpened,
@@ -37,11 +39,13 @@ export default function AnimatedCard({
   return (
     <div
       ref={cardRef}
-      className={`absolute w-[24rem] h-0 bg-zinc-800 transition-all opacity-0 group-hover:opacity-100 ${
-        opened
-          ? 'group-hover:h-fit group-hover:max-h-[26rem]'
-          : 'group-hover:min-h-[19rem]'
-      } z-40 delay-300 hidden lg:flex flex-col gap-y-1 text-white shadow-2xl overflow-hidden rounded-lg pointer-events-none group-hover:pointer-events-auto`}
+      className={`absolute w-[24rem] bg-zinc-800 transition-all duration-300 ease-out hidden lg:flex flex-col gap-y-1 text-white shadow-2xl overflow-hidden rounded-lg z-40 ${
+        isHovered
+          ? `opacity-100 ${
+              opened ? 'h-fit max-h-[26rem]' : 'min-h-[19rem]'
+            } pointer-events-auto`
+          : 'opacity-0 h-0 pointer-events-none -z-10'
+      }`}
     >
       <Link href={href}>
         <div className="relative top-0 w-full h-40">
