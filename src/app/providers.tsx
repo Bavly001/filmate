@@ -2,15 +2,14 @@
 
 import React, { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { NextUIProvider } from '@nextui-org/react';
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 1000 * 60 * 10, // 10 minutes cache
+            staleTime: 60 * 1000,
             refetchOnWindowFocus: false,
           },
         },
@@ -18,12 +17,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <NextUIProvider>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
-    </NextUIProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+    </QueryClientProvider>
   );
 }
-
-export default Providers;

@@ -1,144 +1,104 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { useMateStore } from './useMateStore';
+import * as mediaApi from '@/services/mediaApi';
 
-const mockCatalog = [
-  {
-    id: 'tvm-101',
-    title: 'Interstellar Space',
-    genres: ['Sci-Fi', 'Adventure'],
-    rating: 8.8,
-    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-    synopsis: 'Exploration through a wormhole.',
-  },
-  {
-    id: 'tvm-102',
-    title: 'Speed Velocity',
-    genres: ['Action', 'Thriller'],
-    rating: 8.4,
-    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-    synopsis: 'Adrenaline highway thrills.',
-  },
-  {
-    id: 'tvm-103',
-    title: 'Night Chase',
-    genres: ['Action', 'Crime'],
-    rating: 8.1,
-    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-    synopsis: 'Urban vigilante justice.',
-  },
-  {
-    id: 'tvm-104',
-    title: 'The Great Drama',
-    genres: ['Drama'],
-    rating: 8.7,
-    posterUrl: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1',
-    synopsis: 'Emotional cinema masterpiece.',
-  },
-];
-
-vi.mock('@/services/movieApi', () => ({
-  fetchCatalogMovies: vi.fn().mockImplementation(async (opts?: { genre?: string }) => {
-    if (opts?.genre) {
-      const g = opts.genre.toLowerCase();
-      const filtered = mockCatalog.filter((m) =>
-        m.genres.some((mg) => mg.toLowerCase().includes(g))
-      );
-      return filtered.length > 0 ? filtered : mockCatalog;
-    }
-    return mockCatalog;
-  }),
+vi.mock('@/services/mediaApi', () => ({
+  discoverMateMedia: vi.fn(),
+  FEELING_OPTIONS: [],
+  LANGUAGE_OPTIONS: [],
 }));
 
-describe('Mate Recommendation Engine & Store', () => {
+describe('useMateStore', () => {
   beforeEach(() => {
-    useMateStore.getState().resetQuiz();
+    vi.useFakeTimers();
+    useMateStore.getState().resetBot();
   });
 
-  it('initializes with default quiz state and empty seen list', () => {
+  afterEach(() => {
+    vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it('initializes with default state', () => {
     const state = useMateStore.getState();
-    expect(state.step).toBe('idle');
-    expect(state.isDrawerOpen).toBe(false);
-    expect(state.preferences.moods).toEqual([]);
-    expect(state.seenMovieIds).toEqual([]);
-    expect(state.currentRecommendation).toBeNull();
+    expect(state.isOpen).toBe(false);
+    expect(state.step).toBe('feelings');
+    expect(state.messages).toHaveLength(1);
+    expect(state.messages[0].id).toBe('welcome-1');
   });
 
-  it('toggles mood choices in and out', () => {
-    const store = useMateStore.getState();
-    store.toggleMood('Action');
-    expect(useMateStore.getState().preferences.moods).toContain('Action');
+  it('handleUserNotForMe directly adds "Not for me" user message by default', async () => {
+    vi.mocked(mediaApi.discoverMateMedia).mockResolvedValueOnce([]);
 
-    store.toggleMood('Comedy');
-    expect(useMateStore.getState().preferences.moods).toEqual(['Action', 'Comedy']);
+    const promise = useMateStore.getState().handleUserNotForMe();
 
-    store.toggleMood('Action');
-    expect(useMateStore.getState().preferences.moods).toEqual(['Comedy']);
+    // User message should be added immediately
+    const messagesAfterClick = useMateStore.getState().messages;
+    const notForMeMsg = messagesAfterClick.find(
+      (m) => m.role === 'user' && m.text.includes('Not for me')
+    );
+    expect(notForMeMsg).toBeDefined();
+
+    await vi.runAllTimersAsync();
+    await promise;
   });
 
-  it('enforces All Ages if Family company is selected', () => {
-    const store = useMateStore.getState();
-    store.setAgeRating('18+');
-    expect(useMateStore.getState().preferences.ageRating).toBe('18+');
+  it('handleUserNotForMe(false) does NOT add "Not for me" user message', async () => {
+    vi.mocked(mediaApi.discoverMateMedia).mockResolvedValueOnce([]);
 
-    store.setCompany('family');
-    expect(useMateStore.getState().preferences.company).toBe('family');
-    expect(useMateStore.getState().preferences.ageRating).toBe('All Ages');
+    const promise = useMateStore.getState().handleUserNotForMe(false);
+
+    const messages = useMateStore.getState().messages;
+    const notForMeMsg = messages.find(
+      (m) => m.role === 'user' && m.text.includes('Not for me')
+    );
+    expect(notForMeMsg).toBeUndefined();
+
+    await vi.runAllTimersAsync();
+    await promise;
   });
 
-  it('computes recommendation matching chosen moods', async () => {
-    const store = useMateStore.getState();
-    store.toggleMood('Sci-Fi');
-    await store.computeRecommendation();
+  it('when confirmLanguages has empty initial results, it broadens without adding "Not for me" user message', async () => {
+    // 1st call (initial search): returns empty array []
+    // 2nd call (broadened search): returns a movie
+    const mockMovie = {
+      id: 999,
+      title: 'Broadened Movie',
+      overview: 'A movie found after broadening',
+      poster_path: '/poster.jpg',
+      vote_average: 8.5,
+      release_date: '2023-01-01',
+    };
 
-    const state = useMateStore.getState();
-    expect(state.currentRecommendation).not.toBeNull();
-    expect(state.currentRecommendation?.genres).toContain('Sci-Fi');
-    expect(state.seenMovieIds).toContain(state.currentRecommendation?.id);
-  });
+    vi.mocked(mediaApi.discoverMateMedia)
+      .mockResolvedValueOnce([]) // initial call empty
+      .mockResolvedValueOnce([mockMovie as any]); // broadened call succeeds
 
-  it('excludes rejected movie and delivers a different candidate', async () => {
-    const store = useMateStore.getState();
-    store.toggleMood('Action');
-    await store.computeRecommendation();
-
-    const firstMovie = useMateStore.getState().currentRecommendation;
-    expect(firstMovie).not.toBeNull();
-
-    await store.rejectRecommendation();
-    const secondMovie = useMateStore.getState().currentRecommendation;
-
-    expect(useMateStore.getState().seenMovieIds).toContain(firstMovie!.id);
-    if (secondMovie) {
-      expect(secondMovie.id).not.toBe(firstMovie!.id);
-    }
-  });
-
-  it('relaxes categories by removing the last category when pool exhausts', () => {
+    // Setup feelings stack with 2 feelings so it can pop one to broaden
     useMateStore.setState({
-      activeCategories: ['Action', 'Comedy', 'Romance'],
+      feelingStack: [
+        { id: 'comedy', name: 'Comedy', genreId: 35, label: 'Comedy' },
+        { id: 'scifi', name: 'Sci-Fi', genreId: 878, label: 'Sci-Fi' },
+      ],
+      selectedLanguages: ['en'],
     });
 
-    const store = useMateStore.getState();
-    store.relaxCategories();
-    expect(useMateStore.getState().activeCategories).toEqual(['Action', 'Comedy']);
+    const confirmPromise = useMateStore.getState().confirmLanguages();
 
-    store.relaxCategories();
-    expect(useMateStore.getState().activeCategories).toEqual(['Action']);
-  });
+    await vi.runAllTimersAsync();
+    await confirmPromise;
 
-  it('handles simulated deep analysis loader timing', async () => {
-    vi.useFakeTimers();
-    const store = useMateStore.getState();
-    store.toggleMood('Drama');
+    const messages = useMateStore.getState().messages;
 
-    const analysisPromise = store.startAnalysis(2500);
-    expect(useMateStore.getState().step).toBe('analyzing');
+    // Verify there is NO "Not for me" user message in the messages list
+    const notForMeMsg = messages.find(
+      (m) => m.role === 'user' && m.text.includes('Not for me')
+    );
+    expect(notForMeMsg).toBeUndefined();
 
-    await vi.advanceTimersByTimeAsync(2600);
-    await analysisPromise;
-
-    expect(useMateStore.getState().step).toBe('result');
-    expect(useMateStore.getState().currentRecommendation).not.toBeNull();
-    vi.useRealTimers();
+    // Verify the bot recommendation message with the broadened movie was set
+    const botRecMsg = messages.find((m) => m.movie?.id === 999);
+    expect(botRecMsg).toBeDefined();
+    expect(useMateStore.getState().currentMovie?.id).toBe(999);
   });
 });

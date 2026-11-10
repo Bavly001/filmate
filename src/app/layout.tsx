@@ -1,27 +1,41 @@
-import type { Metadata } from 'next';
 import './globals.css';
+import React from 'react';
+import type { Metadata } from 'next';
 import Providers from './providers';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import MateBot from '@/components/mate/MateBot';
+import SearchOverlay from '@/components/SearchOverlay';
 
 export const metadata: Metadata = {
-  title: 'Filmate | Luxury Cinema & AI Movie Companion',
-  description: 'Experience premier cinema titles, official 4K trailers, and instant AI concierge recommendations with Filmate.',
+  title: 'Filmate - Watch Movies & TV Series',
+  description:
+    'Explore trending movies, top rated TV series, and find your next favorite film with Filmate Mate.',
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/icon.png', type: 'image/png', sizes: '32x32' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon.png',
   },
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-obsidian-canvas text-gray-100 antialiased selection:bg-gold selection:text-black">
+    <html lang="en">
+      <body className="w-full min-h-screen bg-zinc-900 text-white selection:bg-cyan-500 selection:text-black">
         <Providers>
+          <Navbar />
           {children}
+          <Footer />
+          <MateBot />
+          <SearchOverlay />
         </Providers>
       </body>
     </html>

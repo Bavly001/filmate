@@ -4,7 +4,9 @@ out/
 build/
 dist/
 .superpowers/
+.env
 .env*.local
+.env.local
 .DS_Store
 *.log
 npm-debug.log*
@@ -13,5 +15,4 @@ yarn-error.log*
 pnpm-debug.log*
 coverage/
 .playwright-mcp/
-*.png
 *.tsbuildinfo
