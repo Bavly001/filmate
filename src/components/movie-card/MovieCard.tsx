@@ -41,8 +41,6 @@ export default function MovieCard({
     w: typeof window !== 'undefined' ? window.innerWidth : 1200,
     h: typeof window !== 'undefined' ? window.innerHeight : 800,
   });
-  const [scrollable, setScrollable] = useState(false);
-  const [opened, setOpened] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [justify, setJustify] = useState('justify-center');
   const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -88,10 +86,6 @@ export default function MovieCard({
           setJustify(checkWidth());
         }
       }
-
-      if (cardRef.current) {
-        setScrollable(cardRef.current.scrollHeight > cardRef.current.clientHeight);
-      }
     }, 400);
   };
 
@@ -103,7 +97,6 @@ export default function MovieCard({
     }
     setIsHovered(false);
     setJustify('justify-center');
-    setOpened(false);
   };
 
   const displayTitle = title ?? name ?? 'Movie';
@@ -146,12 +139,8 @@ export default function MovieCard({
 
       <AnimatedCard
         id={id}
-        opened={opened}
         isHovered={isHovered}
         cardRef={cardRef}
-        scrollable={scrollable}
-        setOpened={(val) => setOpened(val)}
-        setScrollable={(val) => setScrollable(val)}
         title={displayTitle}
         href={fullHref}
         overview={overview}
